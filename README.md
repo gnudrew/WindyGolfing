@@ -4,7 +4,7 @@ This project demonstrates a data-intensive RESTful web application managing an a
 ## The stack
 * **Database**: *Postgres* (as the RDB), *Azure Blob Storage* (to hold sim data), *RabbitMQ* (task broker), *Redis* (task result backend & cacheing)
 * **Monte Carlo simulation**: built with *numpy* and *pandas* in a *Jupyter* sandbox 
-* **Backend**: *Django Rest Framework* and *Celery* (for asynchronous, distributed tasks ... mainly simulator trials)
+* **Backend**: *Django Rest Framework* (web API) and *Celery* (for asynchronous, distributed tasks ... mainly simulator trials)
 * **Frontend**: *Vue.js* with *TailwindCSS*
 * **Visualization**: *Highcharts*
 
