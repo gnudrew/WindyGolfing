@@ -25,7 +25,7 @@ class WindGeneratorParameters(Timestamped):
     is_lorenz = models.BooleanField(default=False)
 
     # Constant
-    base_speed = ArrayField(models.FloatField(), max_length=3, default=get_triple_0) # [x,y,z]
+    base_velocity = ArrayField(models.FloatField(), max_length=3, default=get_triple_0) # [x,y,z]
 
     # Oscillatory --> speed = base_speed + amplitude * cos(2𝜋*frequency*t + phase_offset)   ... for each of [x,y,z] directions
     frequency = ArrayField(models.FloatField(), max_length=3, default=get_triple_0) # [x,y,z]
@@ -42,7 +42,7 @@ class WindSpacetime(Timestamped):
     """Trajectories of wind speed per spatial dimension (x,y,z) over time (t) --> Table contains meta data, blob contains the actual time-trajectory data."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     generator_name = models.CharField(max_length=30, choices=WIND_GENERATOR_NAMES)
-    generator_parameters = models.OneToOneField(WindGeneratorParameters, on_delete=models.CASCADE, null=True)
+    generator_parameters = models.ForeignKey(WindGeneratorParameters, on_delete=models.CASCADE, null=True)
     duration = models.FloatField() # in seconds
 
     blob_filename = models.CharField(max_length=50, null=True) # filenames will be uuid plus extension... <uuid>.pkl ... so we expect 40 or so characters
