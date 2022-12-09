@@ -86,7 +86,6 @@ class OscillatoryGenerator(Generator):
         self.wind_speeds = ws
         return ws
 
-
 class LorenzGenerator(Generator):
     default_params = {
         'base_speed': np.array([1.0,1.0,1.0]), # m/s
