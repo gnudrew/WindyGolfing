@@ -27,3 +27,6 @@ if __name__ == '__main__':
         rng = np.random.default_rng()
         c = rng.choice(a)
         print("Generator:", c)
+
+# Hmmm, this hasn't yet replicated the issue...
+# Next step: Dig into celery under the hood, to see how it uses the multiprocess API while creating a Pre-Fork pool.
