@@ -17,7 +17,7 @@ class Timestamped(models.Model):
 def get_triple_0():
     return [0, 0, 0]
 class WindGeneratorParameters(Timestamped):
-    """Parameters used by the generator to generate wind speed trajectories per spatial dimension over time."""
+    """Parameters used by the generator to generate trajectories of wind speed per spatial dimension (x,y,z) over time (t)."""
     # flags to indicate generator
     is_windless = models.BooleanField(default=False)
     is_constant = models.BooleanField(default=False)

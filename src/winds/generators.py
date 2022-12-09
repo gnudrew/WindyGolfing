@@ -11,6 +11,7 @@ WIND_GENERATOR_NAMES = [
 ]
 
 class Generator:
+    """Base Generator class"""
     def plotx(self,):
         x = self.wind_speeds[:,0]
         t = self.dt * np.arange(len(x))
@@ -69,9 +70,11 @@ class OscillatoryGenerator(Generator):
         self.dt = params['dt']
 
     def v(self, t):
+        """Calculate velocity vector at a given time, t"""
         return self.base_speed + self.amplitude * np.cos( 2*np.pi * self.frequency * t + self.phase_shift )
 
     def gen(self, duration):
+        """Given a duration in seconds, generate the wind speed trajectory, both returning and assigning it to self.wind_speeds"""
         N = int(duration/self.dt)
         ws = np.empty((N+1,3))
         # initialie
@@ -117,7 +120,7 @@ class LorenzGenerator(Generator):
         return self.dx(*v), self.dy(*v), self.dz(*v)
 
     def gen(self, duration):
-        """generate wind speed trajectory over duration in seconds"""
+        """Given a duration in seconds, generate the wind speed trajectory, both returning and assigning it to self.wind_speeds"""
         N = int(duration / self.dt)
         ws = np.empty((N+1,3)) # wind speeds (x, y, z)
         # initialie
