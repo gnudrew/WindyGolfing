@@ -18,6 +18,8 @@ def get_triple_0():
     return [0, 0, 0]
 class WindGeneratorParameters(Timestamped):
     """Parameters used by the generator to generate trajectories of wind speed per spatial dimension (x,y,z) over time (t)."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
     # flags to indicate generator
     is_windless = models.BooleanField(default=False)
     is_constant = models.BooleanField(default=False)
@@ -43,7 +45,8 @@ class WindSpacetime(Timestamped):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     generator_name = models.CharField(max_length=30, choices=WIND_GENERATOR_NAMES)
     generator_parameters = models.ForeignKey(WindGeneratorParameters, on_delete=models.CASCADE, null=True)
-    duration = models.FloatField() # in seconds
+    duration = models.FloatField(default=100) # in seconds
+    timestep = models.FloatField(default=0.01) # in seconds
 
     blob_filename = models.CharField(max_length=50, null=True) # filenames will be uuid plus extension... <uuid>.pkl ... so we expect 40 or so characters
 
