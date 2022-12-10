@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import WindGeneratorParametersViewSet
 
 router = DefaultRouter()
-router.register('wind-gen-params', WindGeneratorParametersViewSet, basename='wind-gen-params')
+router.register('wind-gen-params', WindGeneratorParametersViewSet)
 
 urlpatterns = router.urls
 
