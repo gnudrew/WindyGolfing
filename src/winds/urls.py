@@ -2,10 +2,10 @@ from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
 
-from .views import WindGeneratorParametersViewSet, WindSpacetimeViewSet
+from .views import WindGenParamsViewSet, WindSpacetimeViewSet
 
 router = DefaultRouter()
-router.register('wind-gen-params', WindGeneratorParametersViewSet)
+router.register('wind-gen-params', WindGenParamsViewSet)
 router.register('wind-spacetimes', WindSpacetimeViewSet)
 
 urlpatterns = router.urls

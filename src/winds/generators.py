@@ -53,32 +53,32 @@ class Generator:
 
 class OscillatoryGenerator(Generator):
     default_params = {
-        'base_speed': np.array([1,1,1]), # m/s
+        'base_velocity': np.array([1,1,1]), # m/s
         'amplitude': np.array([1,1,1]),
         'frequency': np.array([1,1.1,1.2]),
-        'phase_shift': np.array([0,0,0]),
+        'phase_offset': np.array([0,0,0]),
         'dt': .001,
     }
 
     def __init__(self, params=None):
         if params is None:
             params = self.default_params
-        self.base_speed = params['base_speed']
-        self.amplitude = params['amplitude']
-        self.frequency = params['frequency']
-        self.phase_shift = params['phase_shift']
+        self.base_velocity = np.array(params['base_velocity'])
+        self.amplitude = np.array(params['amplitude'])
+        self.frequency = np.array(params['frequency'])
+        self.phase_offset = np.array(params['phase_offset'])
         self.dt = params['dt']
 
     def v(self, t):
         """Calculate velocity vector at a given time, t"""
-        return self.base_speed + self.amplitude * np.cos( 2*np.pi * self.frequency * t + self.phase_shift )
+        return self.base_velocity + self.amplitude * np.cos( 2*np.pi * self.frequency * t + self.phase_offset )
 
     def gen(self, duration):
         """Given a duration in seconds, generate the wind speed trajectory, both returning and assigning it to self.wind_speeds"""
         N = int(duration/self.dt)
         ws = np.empty((N+1,3))
         # initialie
-        ws[0,:] = self.base_speed
+        ws[0,:] = self.base_velocity
         # iterate
         for i in range(1,N+1):
             t = self.dt*i
@@ -88,7 +88,7 @@ class OscillatoryGenerator(Generator):
 
 class LorenzGenerator(Generator):
     default_params = {
-        'base_speed': np.array([1.0,1.0,1.0]), # m/s
+        'base_velocity': np.array([1.0,1.0,1.0]), # m/s
         'rho': 28,
         'sigma': 10,
         'beta': 8/3,
@@ -99,7 +99,7 @@ class LorenzGenerator(Generator):
         if params is None:
             params = self.default_params
         # unpack params
-        self.base_speed = params['base_speed']
+        self.base_velocity = np.array(params['base_velocity'])
         self.rho = params['rho']
         self.sigma = params['sigma']
         self.beta = params['beta']
@@ -123,7 +123,7 @@ class LorenzGenerator(Generator):
         N = int(duration / self.dt)
         ws = np.empty((N+1,3)) # wind speeds (x, y, z)
         # initialie
-        ws[0,:] = self.base_speed
+        ws[0,:] = self.v(0)
         # iterate
         for t in range(1,N+1):
             prev_v = ws[t-1,:]

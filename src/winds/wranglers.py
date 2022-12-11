@@ -19,9 +19,16 @@ class BlobWrangler():
         # model object
         obj = Model(**params)
         # save blob
-        filename = obj.id__str__() + '.fthr' # feather file
+        filename = obj.id.__str__() + '.fthr' # feather file
         filepath = os.path.join(self.staging_path, filename)
         df.to_feather(filepath)
-        # save obj after blob saves
+        # add blob_filename and save obj (after blob successfully stored)
+        obj.blob_filename = filename
         obj.save()
         return obj
+
+    def delete_blob(self, obj):
+        """Given a model object, delete the associated blob file"""
+        filename = obj.blob_filename
+        filepath = os.path.join(self.staging_path, filename)
+        os.remove(filepath)

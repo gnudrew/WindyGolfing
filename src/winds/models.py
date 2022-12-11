@@ -16,7 +16,7 @@ class Timestamped(models.Model):
 
 def get_triple_0():
     return [0, 0, 0]
-class WindGeneratorParameters(Timestamped):
+class WindGenParams(Timestamped):
     """Parameters used by the generator to generate trajectories of wind speed per spatial dimension (x,y,z) over time (t)."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
@@ -44,7 +44,7 @@ class WindSpacetime(Timestamped):
     """Trajectories of wind speed per spatial dimension (x,y,z) over time (t) --> Table contains meta data, blob contains the actual time-trajectory data."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     generator_name = models.CharField(max_length=30, choices=WIND_GENERATOR_NAMES)
-    generator_parameters = models.ForeignKey(WindGeneratorParameters, on_delete=models.CASCADE, null=True)
+    generator_params = models.ForeignKey(WindGenParams, on_delete=models.CASCADE, null=True)
     duration = models.FloatField(default=100) # in seconds
     timestep = models.FloatField(default=0.01) # in seconds
 

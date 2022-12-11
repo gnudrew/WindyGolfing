@@ -1,13 +1,15 @@
 from rest_framework import serializers 
 
-from .models import WindGeneratorParameters, WindSpacetime
+from .models import WindGenParams, WindSpacetime
 
-class WindGeneratorParametersSerializer(serializers.HyperlinkedModelSerializer):
+class WindGenParamsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = WindGeneratorParameters
+        model = WindGenParams
         fields = '__all__'
 
 class WindSpacetimeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WindSpacetime
-        fields = '__all__'
+        exclude = [
+            'blob_filename'
+        ]
