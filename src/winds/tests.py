@@ -4,3 +4,7 @@ from django.test import TestCase
 class TestBlobWrangler(TestCase):
     def write_spacetime(self,):
         # make WindGenParams
+        pass
+
+    def read_spacetime(self,):
+        pass
