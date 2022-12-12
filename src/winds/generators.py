@@ -78,7 +78,7 @@ class OscillatoryGenerator(Generator):
         N = int(duration/self.dt)
         ws = np.empty((N+1,3))
         # initialie
-        ws[0,:] = self.base_velocity
+        ws[0,:] = self.v(0)
         # iterate
         for i in range(1,N+1):
             t = self.dt*i
@@ -123,7 +123,7 @@ class LorenzGenerator(Generator):
         N = int(duration / self.dt)
         ws = np.empty((N+1,3)) # wind speeds (x, y, z)
         # initialie
-        ws[0,:] = self.v(0)
+        ws[0,:] = self.base_velocity
         # iterate
         for t in range(1,N+1):
             prev_v = ws[t-1,:]
