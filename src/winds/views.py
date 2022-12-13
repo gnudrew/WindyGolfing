@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from .models import WindGenParams, WindSpacetime
 from .serializers import WindGenParamsSerializer, WindSpacetimeSerializer
 from .generators import OscillatoryGenerator, LorenzGenerator
-from ..commons.wranglers import BlobWrangler
+
+from commons.wranglers import BlobWrangler
 
 class WindGenParamsViewSet(ModelViewSet):
     queryset = WindGenParams.objects.all()
