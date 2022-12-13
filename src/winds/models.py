@@ -5,14 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 
 from .generators import WIND_GENERATOR_NAMES
 
-# Create your models here.
-class Timestamped(models.Model):
-    """Abstract model to add timestamp fields"""
-    created_at = models.DateTimeField(auto_now=True, editable=False)
-    modified_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from commons.models import Timestamped
 
 def get_triple_0():
     return [0, 0, 0]
