@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 from commons.models import Timestamped
 
@@ -56,8 +57,21 @@ class BaseParams(models.Model):
         abstract = True
 
 class SimTrial(BaseParams, Timestamped):
+    """Single ball trajectory"""
+    initial_time = models.FloatField()
+    initial_speed = models.FloatField
+    initial_direction = ArrayField(models.FloatField, max_length=3) # unit vector
+
     blob_filename = models.CharField(max_length=50, null=True)
 
 class SimExperiment(BaseParams, Timestamped):
-    is_control = models.BooleanField(default=False)
+    """Collection of SimTrials for single parameter set"""
+    is_control = models.BooleanField(default=False) # control will probably be uniform distribution (no target locality within timing, speed, or direction)
     simtrials = models.ManyToManyField(SimTrial)
+
+field_names = [f.__str__() for f in BaseParams._meta.get_fields()]
+class DesignOfExperiments(Timestamped):
+    """Collection of SimExperiments to map outcome over parameter landscape"""
+    # Can I populate this Model's attribute names from BaseParams' field_names and assign different values... e.g. ArrayField
+    # I want each parameter to have a 3-tuple corresponding to (start, end, num_points).
+    pass
