@@ -6,8 +6,8 @@ from commons.models import Timestamped
 # Create your models here.
 AIMING_GEOMETRY_CHOICES = [
     ('EulerAngles', 'EulerAngles'),
-    ('SphericalCoordinates', 'SphericalCoordinates'),
-    ('CylindricalCoordinates', 'CylindricalCoordinates'),
+    ('Spherical', 'Spherical'),
+    ('Cylindrical', 'Cylindrical'),
 ]
 PROBABILITY_FUNCTION_CHOICES = [
     ('Uniform', 'Uniform'),
