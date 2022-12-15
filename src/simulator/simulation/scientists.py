@@ -3,10 +3,12 @@
 from .probabilities import UniformProbGen, NormalProbGen, LogNormalProbGen
 from .geometries import EulerAnglesGeometry, SphericalGeometry, CylindricalGeometry
 from .sim import SimTrialRunner
+from simulator.models import SimTrial
 from commons.wranglers import BlobWrangler
 from winds.models import WindSpacetime
 
 import numpy as np
+import pandas as pd
 
 class Scientist:
     """ Conducts Monte Carlo experiments, sampling many SimTrials for a given parameter set """
@@ -52,6 +54,7 @@ class Scientist:
         'Spherical': SphericalGeometry,
         'Cylindrical': CylindricalGeometry,
     }
+    tee_position = np.array(0,0,10) 
 
     def __init__(self, params):
         """
@@ -218,8 +221,22 @@ class Scientist:
             v_initial = speed_initial*v_hat
             
             # run a trial
-            runner = SimTrialRunner(t_initial, v_initial, self.arr_windspacetime, timestep)
-            id = runner.run()
+            runner = SimTrialRunner(t_initial, self.tee_position, v_initial, self.arr_windspacetime, timestep)
+            runner.run()
+
+            # extract runner outputs used to save sim trial
+            params = self.params
+
+            # save the sim trial
+            id = self.save_trial(params)
             simtrial_ids.append(id)
-            
+
         return simtrial_ids
+
+    def save_trial(self, params):
+        """Store blob and simtrial obj then return simtrial_id"""
+        # make dataframe
+        df = pd.DataFrame(self.ball_position, columns=['x', 'y', 'z'],)
+        # save
+        simtrial_id = BlobWrangler().write_blob(df, SimTrial, params)
+        return simtrial_id
