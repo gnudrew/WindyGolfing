@@ -7,7 +7,7 @@ from simulator.models import SimTrial
 from commons.wranglers import BlobWrangler
 
 class SimTrialRunner:
-    """Takes raw inputs and simulates a single ball trajectory"""
+    """Takes raw inputs and simulates a single ball trajectory using physics"""
     def __init__(self, t_initial, p_initial, v_initial, arr_windspacetime, timestep, g=9.81, m=.0456, drag_coef=0):
         """
         Parameters:
@@ -68,4 +68,6 @@ class SimTrialRunner:
             if self.ball_position[t,2] <= 0: # hits ground (z <= 0)
                 ball_hit_ground = True
             t += 1
+        
+        return self.ball_position
 

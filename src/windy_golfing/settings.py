@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "commons",
     "winds",
     "simulator",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
