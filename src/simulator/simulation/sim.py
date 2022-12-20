@@ -125,25 +125,71 @@ class SimTrialRunner:
             print(f'[SimTrialRunner] Completed Run.')
             print(f'[SimTrialRunner]  >> Ball hit ground?.. {"YES" if ball_hit_ground else "NO"}.')
             print(f'[SimTrialRunner]  >> Trajectory duration = {t*self.timestep}s.')
-            print(f'[SimTrialRunner] Fin.')
 
-        # remove trailing nans --> assume no nans exist in the main trajectory
+        # truncate after
         self.ball_position = self.ball_position[0:t, :]
+
+        if ball_hit_ground:
+            # get final ball position: interpolate to solve (x,y) where ball hit ground, since z overshoots at final step
+            p1 = self.ball_position[t-2,:]
+            p2 = self.ball_position[t-1,:]
+            if self.verbosity >= 1:
+                print(f"[SimTrialRunner] Interpolating for final position between...")
+                print(f"[SimTrialRunner]   >> p1: {p1}")
+                print(f"[SimTrialRunner]   >> p2: {p2}")
+
+            # Using vector-linear interpolation, p = p1 + (p2-p1)*s = [x,y,0]
+            # In z-dimension solve for s:   z = z1 + (z2-z1) * s = 0
+            #                               s = z1/(z1-z2)
+            # Plug in s for x,y-dimensions: x = x1 + (x2-x1)*s = x1 + (x2-x1)*z1/(z1-z2)
+            #                               y = y1 + (y2-y1)*s = y1 + (y2-y1)*z1/(z1-z2)
+            x1, y1, z1 = p1[0], p1[1], p1[2]
+            x2, y2, z2 = p2[0], p2[1], p2[2]
+            z_final = 0
+            s = (z_final-z1)/(z2-z1)
+            x_final = x1+(x2-x1)*s
+            y_final = y1+(y2-y1)*s
+            self.p_final = np.array([x_final, y_final, z_final])
+            if self.verbosity >= 1:
+                print(f"[SimTrialRunner] Interpolated.")
+                print(f"[SimTrialRunner]   >> p_final: {self.p_final}")
+                print(f'[SimTrialRunner] Fin.')
 
         return self.ball_position
 
-    def _plot_arr(self, arr):
+    def to_df(self,):
+        """After self.run, convert ball trajectory to a pd.DataFrame"""
+        return pd.DataFrame({
+            'x': self.ball_position[:,0],
+            'y': self.ball_position[:,1],
+            'z': self.ball_position[:,2],
+            },
+            index=self.dt*np.array(range(self.ball_position.shape[0])),
+        )
+
+    def _plot1D(self, arr):
         plt.plot(arr)
         plt.show
 
     def plotx(self,):
         x = self.ball_position[:,0]
-        self._plot_arr(x)
+        self._plot1D(x)
     
     def ploty(self,):
         y = self.ball_position[:,1]
-        self._plot_arr(y)
+        self._plot1D(y)
 
     def plotz(self,):
         z = self.ball_position[:,2]
-        self._plot_arr(z)
+        self._plot1D(z)
+
+    def plot3d(self,):
+        """show a 3D parametric plot of ball position, (x, y, z), over t"""
+        # setup x,y,z
+        x = self.ball_position[:,0]
+        y = self.ball_position[:,1]
+        z = self.ball_position[:,2]
+        # do plot
+        ax = plt.figure().add_subplot(projection='3d')
+        ax.plot(x,y,z)
+        plt.show()
