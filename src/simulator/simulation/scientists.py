@@ -54,7 +54,7 @@ class Scientist:
         'Spherical': SphericalGeometry,
         'Cylindrical': CylindricalGeometry,
     }
-    tee_position = np.array(0,0,10) 
+    tee_position = np.array(0,0,10)
 
     def __init__(self, params):
         """
@@ -66,6 +66,11 @@ class Scientist:
             ...
             keys must include: [
                 'windspacetime_id',
+                'num_trials',
+                'prob_speed_fn_name',
+                'max_initial_speed',
+                'prob_speed_center',
+                'prob_speed_spread',
                 'prob_timing_fn_name',
                 'max_wait_time',
                 'prob_timing_center',
@@ -84,10 +89,6 @@ class Scientist:
                 'prob_aiming_X3_max',
                 'prob_aiming_X3_center',
                 'prob_aiming_X3_spread',
-                'prob_speed_fn_name',
-                'max_initial_speed',
-                'prob_speed_center',
-                'prob_speed_spread',
                 'timestep',
             ],
             keys can optionally include: [
@@ -128,20 +129,25 @@ class Scientist:
         ProbGenAiming = self.ProbGens[self.params['prob_aiming_fn_name']]
         ProbGenSpeed = self.ProbGens[self.params['prob_speed_fn_name']]
 
+        # Instantiate probability generators
         pgtime = ProbGenTiming(
             self.params['max_wait_time'],
             self.params['prob_timing_center'],
             self.params['prob_timing_spread'],
         )
-        pgaim = ProbGenAiming(
+        pgaim1 = ProbGenAiming(
             self.params['prob_aiming_X1_min'],
             self.params['prob_aiming_X1_max'],
             self.params['prob_aiming_X1_center'],
             self.params['prob_aiming_X1_spread'],
+        )
+        pgaim2 = ProbGenAiming(
             self.params['prob_aiming_X2_min'],
             self.params['prob_aiming_X2_max'],
             self.params['prob_aiming_X2_center'],
             self.params['prob_aiming_X2_spread'],
+        )
+        pgaim3 = ProbGenAiming(
             self.params['prob_aiming_X3_min'],
             self.params['prob_aiming_X3_max'],
             self.params['prob_aiming_X3_center'],
@@ -156,16 +162,16 @@ class Scientist:
         # Generate prob functions
         prob_fn_timing = pgtime.generate_fn()
         prob_fn_speed = pgspeed.generate_fn()
-        prob_fn_aiming_x1 = pgaim.generate_fn('X1')
-        prob_fn_aiming_x2 = pgaim.generate_fn('X2')
-        prob_fn_aiming_x3 = pgaim.generate_fn('X3')
+        prob_fn_aiming_x1 = pgaim1.generate_fn()
+        prob_fn_aiming_x2 = pgaim2.generate_fn()
+        prob_fn_aiming_x3 = pgaim3.generate_fn()
 
         # Generate inversions of prob functions to sample (https://stackoverflow.com/questions/21100716/fast-arbitrary-distribution-random-sampling-inverse-transform-sampling)
         inv_prob_fn_timing = pgtime.generate_inv_fn()
         inv_prob_fn_speed = pgspeed.generate_inv_fn()
-        inv_prob_fn_aiming_x1 = pgaim.generate_inv_fn('X1')
-        inv_prob_fn_aiming_x2 = pgaim.generate_inv_fn('X2')
-        inv_prob_fn_aiming_x3 = pgaim.generate_inv_fn('X3')
+        inv_prob_fn_aiming_x1 = pgaim1.generate_inv_fn()
+        inv_prob_fn_aiming_x2 = pgaim2.generate_inv_fn()
+        inv_prob_fn_aiming_x3 = pgaim3.generate_inv_fn()
 
         self.prob_fns = {
             'timing': prob_fn_timing,
