@@ -7,7 +7,7 @@ class ProbGen:
 class UniformProbGen(ProbGen):
     """Generate Uniform probability functions"""
     def __init__(self, x_min=None, x_max=None, **kwargs):
-        self.x_min = x_min
+        self.x_min = x_min if x_min else 0
         self.x_max = x_max
 
     def generate_fn(self):
@@ -30,7 +30,7 @@ class UniformProbGen(ProbGen):
             """Given a random number, r, in (0,1], return a value, x, sampled by the pdf"""
             return self.x_min + (self.x_max-self.x_min)*r  # y = mx + b
         return inv
-        
+
 class NormalProbGen(ProbGen):
     """Generate Normal probabilibty functions"""
     pass

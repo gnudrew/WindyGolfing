@@ -40,6 +40,8 @@ class Scientist:
         'timestep',
     ]
     optional_keys_params = [
+        'min_wait_time',
+        'min_initial_speed',
         'g',
         'm',
         'drag_coef',
@@ -92,6 +94,8 @@ class Scientist:
                 'timestep',
             ],
             keys can optionally include: [
+                'min_wait_time',
+                'min_initial_speed',
                 'g',
                 'm',
                 'drag_coef,
@@ -131,32 +135,34 @@ class Scientist:
 
         # Instantiate probability generators
         pgtime = ProbGenTiming(
-            self.params['max_wait_time'],
-            self.params['prob_timing_center'],
-            self.params['prob_timing_spread'],
+            x_min = self.params.get('min_wait_time'), # optional, o.w. None
+            x_max = self.params['max_wait_time'],
+            x_center = self.params['prob_timing_center'],
+            x_spread = self.params['prob_timing_spread'],
         )
         pgaim1 = ProbGenAiming(
-            self.params['prob_aiming_X1_min'],
-            self.params['prob_aiming_X1_max'],
-            self.params['prob_aiming_X1_center'],
-            self.params['prob_aiming_X1_spread'],
+            x_min = self.params['prob_aiming_X1_min'],
+            x_max = self.params['prob_aiming_X1_max'],
+            x_center = self.params['prob_aiming_X1_center'],
+            x_spread = self.params['prob_aiming_X1_spread'],
         )
         pgaim2 = ProbGenAiming(
-            self.params['prob_aiming_X2_min'],
-            self.params['prob_aiming_X2_max'],
-            self.params['prob_aiming_X2_center'],
-            self.params['prob_aiming_X2_spread'],
+            x_min = self.params['prob_aiming_X2_min'],
+            x_max = self.params['prob_aiming_X2_max'],
+            x_center = self.params['prob_aiming_X2_center'],
+            x_spread = self.params['prob_aiming_X2_spread'],
         )
         pgaim3 = ProbGenAiming(
-            self.params['prob_aiming_X3_min'],
-            self.params['prob_aiming_X3_max'],
-            self.params['prob_aiming_X3_center'],
-            self.params['prob_aiming_X3_spread'],
+            x_min = self.params['prob_aiming_X3_min'],
+            x_max = self.params['prob_aiming_X3_max'],
+            x_center = self.params['prob_aiming_X3_center'],
+            x_spread = self.params['prob_aiming_X3_spread'],
         )
         pgspeed = ProbGenSpeed(
-            self.params['max_initial_speed'],
-            self.params['prob_speed_center'],
-            self.params['prob_speed_spread'],
+            x_min = self.params.get('min_initial_speed'), # optional, o.w. None
+            x_max = self.params['max_initial_speed'],
+            x_center = self.params['prob_speed_center'],
+            x_spread = self.params['prob_speed_spread'],
         )
 
         # Generate prob functions
