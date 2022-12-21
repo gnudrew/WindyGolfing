@@ -23,8 +23,14 @@ class UniformProbGen(ProbGen):
 
     def generate_inv_fn(self):
         """Generate the inversion of the pdf"""
-        pass
-
+        # This case is easy. The function should be a line passing through the two points:
+        #  p1: (0,x_min)
+        #  p2: (1,x_max)
+        def inv(r):
+            """Given a random number, r, in (0,1], return a value, x, sampled by the pdf"""
+            return self.x_min + (self.x_max-self.x_min)*r  # y = mx + b
+        return inv
+        
 class NormalProbGen(ProbGen):
     """Generate Normal probabilibty functions"""
     pass
