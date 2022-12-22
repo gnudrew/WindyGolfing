@@ -215,6 +215,7 @@ class Scientist:
             
             # choose aim
             ## choose abstract coordinates
+            ### N.B. third coordinate is used in euler angles but is throwaway in spherical geometry.
             ipa_x1 = self.inv_prob_fns['aiming_x1'] # inverted probability timing function
             ipa_x2 = self.inv_prob_fns['aiming_x2']
             ipa_x3 = self.inv_prob_fns['aiming_x3']
@@ -240,15 +241,25 @@ class Scientist:
             params = self.params
 
             # save the sim trial
-            id = self.save_trial(params)
+            id = self.save_trial(runner.ball_position, params)
             simtrial_ids.append(id)
 
         return simtrial_ids
 
-    def save_trial(self, params):
-        """Store blob and simtrial obj then return simtrial_id"""
+    def save_trial(self, arr_ball_position, params):
+        """
+        Store blob and simtrial obj then return simtrial_id.
+
+        Parameters:
+        -------
+        arr_ball_position: np.array
+            The ball position trajetory in 3D cartesian coordinates. Expects an np.array with 3 columns and arbitrary number of rows, shape=(T, 3).
+        params: dict
+            The simulation parameters passed to the scientist
+        """
         # make dataframe
-        df = pd.DataFrame(self.ball_position, columns=['x', 'y', 'z'],)
+        df = pd.DataFrame(arr_ball_position, columns=['x', 'y', 'z'],)
         # save
         simtrial_id = BlobWrangler().write_blob(df, SimTrial, params)
+        
         return simtrial_id
