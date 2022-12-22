@@ -46,17 +46,17 @@ class Scientist:
         'm',
         'drag_coef',
     ]
-    ProbGens = { # probability function generators, keyed by name
+    ProbGens = { # probability function generators, keyed by function name
         'Uniform': UniformProbGen,
         'Normal': NormalProbGen,
         'Log-normal': LogNormalProbGen,
     }
-    Geometries = { # geometry classes, keyed by name
+    Geometries = { # geometry classes, keyed by geometry name
         'EulerAngles': EulerAnglesGeometry,
         'Spherical': SphericalGeometry,
         'Cylindrical': CylindricalGeometry,
     }
-    tee_position = np.array(0,0,10)
+    tee_position = np.array([0,0,10])
 
     def __init__(self, params):
         """
