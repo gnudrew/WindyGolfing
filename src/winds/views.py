@@ -22,7 +22,14 @@ class WindGenParamsViewSet(ModelViewSet):
             qs = self.get_queryset().filter(**serializer.validated_data)
             if qs.count() != 0:
                 print("This parameter set already exists.")
-                return Response("This parameter set already exists.", status=409)
+                id = qs[0].id.__str__()
+                return Response(
+                    data={
+                        'message': 'Already exists',
+                        'id': id,
+                    }, 
+                    status=409,
+                )
 
         return super().create(request, *args, **kwargs)
 
@@ -34,6 +41,15 @@ class WindSpacetimeViewSet(ModelViewSet):
         """
         Given a set of wind spacetime parameters, generates and stores a WindSpaceTime to RDB and blob storage, returning the uuid, or if one already exists for this parameter set returns that object's uuid.
         
+        POST data:
+        -------
+        generator_params: str
+            The id of the WindGenParams table entry holding the parameters used to generate this wind trajectory.
+        duration: float
+            The duration of the winds spacetime trajectory in seconds. (e.g. 100)
+        timestep: float
+            The timestep size of the winds spacetime trajectory in seconds. (e.g. 0.01)
+
         Response data:
         -------
         {
