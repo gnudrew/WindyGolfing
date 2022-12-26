@@ -31,6 +31,18 @@ class WindSpacetimeViewSet(ModelViewSet):
     serializer_class = WindSpacetimeSerializer
     
     def create(self, request, *args, **kwargs):
+        """
+        Given a set of wind spacetime parameters, generates and stores a WindSpaceTime to RDB and blob storage, returning the uuid, or if one already exists for this parameter set returns that object's uuid.
+        
+        Response data:
+        -------
+        {
+            message: str ['Created' | 'Already exists'],
+                A textual message reporting on the outcome of the request.
+            id: str [uuid]
+                The uuid of the WindSpaceTime that was generated or already existed for the given parameter set.
+        }
+        """
         # check existence
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -38,12 +50,19 @@ class WindSpacetimeViewSet(ModelViewSet):
             qs = self.get_queryset().filter(**vdata)
             if qs.count() != 0:
                 print("This parameter set already exists.")
-                return Response("This parameter set already exists.", status=409)
+                id = qs[0].id.__str__() # uuid str
+                return Response(
+                    data={
+                        'message': 'Already exists',
+                        'id': id,
+                    }, 
+                    status=409,
+                )
 
             # generate wind trajectory
             duration = vdata['duration']
             timestep = vdata['timestep']
-            o = vdata['generator_params'] # ForeignKey --> serializer should convert str to obj
+            o = vdata['generator_params'] # ForeignKey --> serializer converts uuid str to mode obj
             if o.is_oscillatory:
                 params = {
                     'base_velocity': o.base_velocity,
@@ -68,9 +87,14 @@ class WindSpacetimeViewSet(ModelViewSet):
             
             # store data (blob and obj)
             B = BlobWrangler()
-            B.write_blob(df_wind_speeds, WindSpacetime, vdata)
-
-            return Response("Created.")
+            obj = B.write_blob(df_wind_speeds, WindSpacetime, vdata)
+            id = obj.id.__str__() 
+            return Response(
+                data={
+                    'message':'Created',
+                    'id': id,
+                }
+            )
         else:
             return super().create(request, *args, **kwargs)
 
