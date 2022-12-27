@@ -53,7 +53,6 @@ class SimTrialRunner:
             print(f'  >> t_initial    = {self.t_initial}')
             print(f'  >> p_initial    = {self.p_initial}')
             print(f'  >> v_initial    = {self.v_initial}')
-            print(f'  >> windspeed_id = {""}')
             print(f'  >> timestep     = {self.timestep}')
             print(f'  >> g            = {self.g}')
             print(f'  >> m            = {self.m}')
@@ -153,7 +152,7 @@ class SimTrialRunner:
             if self.verbosity >= 1:
                 print(f"[SimTrialRunner] Interpolated.")
                 print(f"[SimTrialRunner]   >> p_final: {self.p_final}")
-                print(f'[SimTrialRunner] Fin.')
+                print(f'[SimTrialRunner] Run complete.')
 
         return self.ball_position
 

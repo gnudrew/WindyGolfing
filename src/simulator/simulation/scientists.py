@@ -11,6 +11,8 @@ from winds.models import WindSpacetime
 import numpy as np
 import pandas as pd
 
+from termcolor import cprint
+
 class Scientist:
     """ Conducts Monte Carlo experiments, sampling many SimTrials for a given parameter set """
     required_keys_params = [
@@ -46,6 +48,7 @@ class Scientist:
         'g',
         'm',
         'drag_coef',
+        'verbosity',
     ]
     ProbGens = { # probability function generators, keyed by function name
         'Uniform': UniformProbGen,
@@ -99,13 +102,17 @@ class Scientist:
                 'min_initial_speed',
                 'g',
                 'm',
-                'drag_coef,
+                'drag_coef',
+                'verbosity',
             ]
         
         """
         # assign params
         self._check_params(params)
         self.params = params
+
+        # set verbosity
+        self.verbosity = params.get('verbosity', 1)
 
         # load winds
         self.load_windspacetime()
@@ -210,6 +217,8 @@ class Scientist:
         # do the trials
         simtrial_ids = []
         for n in range(N):
+            if self.verbosity >= 1:
+                cprint(f"[Scientist] >>>>>>>>>>>>>> Running Trial #{n} >>>>>>>>>>>>>>", 'blue')
             # choose time
             ipt = self.inv_prob_fns['timing'] # inverted probability timing function
             self.time_initial = time_initial = ipt(self.rng.random())
@@ -246,6 +255,11 @@ class Scientist:
             # save the sim trial
             id = self.save_trial(runner.ball_position, params)
             simtrial_ids.append(id)
+
+            # log result
+            if self.verbosity >= 1:
+                cprint(f"[Scientist] v_i={runner.v_initial}m/s @ t_i={runner.t_initial} --> p_f={runner.p_final}m.", 'red')
+                print(".")
 
         return simtrial_ids
 
