@@ -5,6 +5,7 @@ from .geometries import EulerAnglesGeometry, SphericalGeometry, CylindricalGeome
 from .sim import SimTrialRunner
 from simulator.models import SimTrial
 from commons.wranglers import BlobWrangler
+from commons.utilities import trim_dict, list_model_fields
 from winds.models import WindSpacetime
 
 import numpy as np
@@ -107,7 +108,7 @@ class Scientist:
         self.params = params
 
         # load winds
-        self.load_windspacetime(self.params)
+        self.load_windspacetime()
 
         # build probability functions
         self.gen_prob_fns()
@@ -211,7 +212,9 @@ class Scientist:
         for n in range(N):
             # choose time
             ipt = self.inv_prob_fns['timing'] # inverted probability timing function
-            t_initial = ipt(self.rng.random())
+            self.time_initial = time_initial = ipt(self.rng.random())
+            ## convert to nearest timestep
+            t_initial = int(np.round(time_initial/timestep)) # t denotes an int
             
             # choose aim
             ## choose abstract coordinates
@@ -224,11 +227,11 @@ class Scientist:
             x3 = ipa_x3(self.rng.random())
             ## convert to unit vector via geometry
             G = self.Geometries[self.params['prob_aiming_geometry']]
-            v_hat = G(x1, x2, x3).get_unit_vector()
+            self.direction_initial = v_hat = G(x1, x2, x3).get_unit_vector()
             
             # choose speed
             ips = self.inv_prob_fns['speed'] # inverted probability timing function
-            speed_initial = ips(self.rng.random())
+            self.speed_initial = speed_initial = ips(self.rng.random())
 
             # set initial velocity
             v_initial = speed_initial*v_hat
@@ -259,7 +262,16 @@ class Scientist:
         """
         # make dataframe
         df = pd.DataFrame(arr_ball_position, columns=['x', 'y', 'z'],)
+        
+        # trim parameters to fit SimTrial model
+        params_simtrial = trim_dict(params, list_model_fields(SimTrial))
+
+        # add computed parameters in this trial
+        params_simtrial['time_initial'] = self.time_initial
+        params_simtrial['direction_initial'] = list(self.direction_initial) # convert np.array to list for save
+        params_simtrial['speed_initial'] = self.speed_initial
+
         # save
-        simtrial_id = BlobWrangler().write_blob(df, SimTrial, params)
+        simtrial_id = BlobWrangler().write_blob(df, SimTrial, params_simtrial)
         
         return simtrial_id
