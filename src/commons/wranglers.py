@@ -16,7 +16,7 @@ class BlobWrangler():
 
     def write_blob(self, df, Model, model_params):
         """
-        Given a DataFrame, Model class, and model instance parameters, convert and write the DataFrame to blob storage, creating a new Model entry along the way and returning its id.
+        Given a DataFrame, Model class, and model instance parameters, convert and write the DataFrame to blob storage, creating a new Model entry along the way and returning it.
         
         Parameters:
         -------
@@ -36,6 +36,7 @@ class BlobWrangler():
         # model object
         obj = Model(**model_params)
         # save blob
+        ## assume Model's primary key is a uuid object
         filename = obj.id.__str__() + '.fthr' # feather file
         filepath = os.path.join(self.staging_path, filename)
         df.to_feather(filepath)

@@ -4,6 +4,8 @@ from django.contrib.postgres.fields import ArrayField
 from commons.models import Timestamped
 from winds.models import WindGenParams, WindSpacetime
 
+import uuid
+
 # Create your models here.
 AIMING_GEOMETRY_CHOICES = [
     ('EulerAngles', 'EulerAngles'),
@@ -18,6 +20,8 @@ PROBABILITY_FUNCTION_CHOICES = [
 
 class BaseParams(models.Model):
     """Base parameters used in SimTrial and SimExperiment models"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     # winds
     windgenparams = models.ForeignKey(WindGenParams, on_delete=models.CASCADE, null=True)
     windspacetime = models.ForeignKey(WindSpacetime, on_delete=models.CASCADE, null=True)
@@ -72,6 +76,7 @@ class SimTrial(BaseParams, Timestamped):
 class SimExperiment(BaseParams, Timestamped):
     """Collection of SimTrials for single parameter set"""
     is_control = models.BooleanField(default=False) # control will probably be uniform distribution (no target locality within timing, speed, or direction)
+    num_trials = models.IntegerField(null=True)
     simtrials = models.ManyToManyField(SimTrial)
 
 # field_names = [f.__str__() for f in BaseParams._meta.get_fields()]

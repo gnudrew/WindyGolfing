@@ -3,7 +3,7 @@
 from .probabilities import UniformProbGen, NormalProbGen, LogNormalProbGen
 from .geometries import EulerAnglesGeometry, SphericalGeometry, CylindricalGeometry
 from .sim import SimTrialRunner
-from simulator.models import SimTrial
+from simulator.models import SimTrial, SimExperiment
 from commons.wranglers import BlobWrangler
 from commons.utilities import trim_dict, list_model_fields
 from winds.models import WindSpacetime
@@ -286,6 +286,44 @@ class Scientist:
         params_simtrial['speed_initial'] = self.speed_initial
 
         # save
-        simtrial_id = BlobWrangler().write_blob(df, SimTrial, params_simtrial)
+        simtrial_obj = BlobWrangler().write_blob(df, SimTrial, params_simtrial)
         
-        return simtrial_id
+        return simtrial_obj
+
+class ExperimentCollater:
+    """Takes list of SimTrial id's from parallel instances of Scientist and saves 1 experiment"""
+    def __init__(self, params, chunked_simtrial_ids=None):
+        """
+        Parameters:
+        -------
+        params: dict
+            Experiment parameters to save
+        chunked_simtrial_ids: list of lists
+            List of SimTrial id's to save to experiment
+        """
+        self.chunked_simtrial_ids = chunked_simtrial_ids
+        self.params = params
+
+        self.collate()
+
+    def collate(self, ):
+        """Collate the list of lists in chunked_simtrial_ids into a single list"""
+        self.simtrial_ids = []
+        for list_simtrial_ids in self.chunked_simtrial_ids:
+            self.simtrial_ids = self.simtrial_ids + list_simtrial_ids
+        return self.simtrial_ids
+
+    def save_experiment(self, ):
+        # trim parameters to fit SimExperiment model
+        params_experiment = trim_dict(self.params, list_model_fields(SimExperiment))
+
+        # convert simtrial id's into objects and add to params
+        # simtrial_objs = [SimTrial.objects.get(pk=id) for id in self.simtrial_ids]
+        # params_experiment['simtrials'] = simtrial_objs
+        # params_experiment['simtrials'] = self.simtrial_ids
+
+        se_obj = SimExperiment.objects.create(**params_experiment)
+        se_obj.simtrials.set(self.simtrial_ids)
+        se_obj.save()
+
+        return se_obj
