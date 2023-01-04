@@ -53,7 +53,7 @@ class Generator:
 
 class OscillatoryGenerator(Generator):
     default_params = {
-        'base_velocity': np.array([1,1,1]), # m/s
+        'base_velocity': np.array([0,0,0]), # m/s
         'amplitude': np.array([1,1,1]),
         'frequency': np.array([1,1.1,1.2]),
         'phase_offset': np.array([0,0,0]),

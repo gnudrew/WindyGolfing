@@ -13,7 +13,7 @@ import pandas as pd
 
 from termcolor import cprint
 
-class Scientist:
+class ExperimentRunner:
     """ Conducts Monte Carlo experiments, sampling many SimTrials for a given parameter set """
     required_keys_params = [
         'windspacetime_id',
@@ -291,7 +291,7 @@ class Scientist:
         return simtrial_obj
 
 class ExperimentCollater:
-    """Takes list of SimTrial id's from parallel instances of Scientist and saves 1 experiment"""
+    """Takes list of SimTrial id's from parallel instances of ExperimentRunner and saves 1 experiment"""
     def __init__(self, params, chunked_simtrial_ids=None):
         """
         Parameters:
@@ -304,9 +304,9 @@ class ExperimentCollater:
         self.chunked_simtrial_ids = chunked_simtrial_ids
         self.params = params
 
-        self.collate()
+        self._collate()
 
-    def collate(self, ):
+    def _collate(self, ):
         """Collate the list of lists in chunked_simtrial_ids into a single list"""
         self.simtrial_ids = []
         for list_simtrial_ids in self.chunked_simtrial_ids:
