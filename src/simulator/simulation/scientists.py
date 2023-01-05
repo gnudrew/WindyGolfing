@@ -19,11 +19,11 @@ class ExperimentRunner:
         'windspacetime_id',
         'num_trials',
         'prob_speed_fn_name',
-        'max_initial_speed',
+        'prob_speed_max',
         'prob_speed_center',
         'prob_speed_spread',
         'prob_timing_fn_name',
-        'max_wait_time',
+        'prob_timing_max',
         'prob_timing_center',
         'prob_timing_spread',
         'prob_aiming_fn_name',
@@ -43,8 +43,8 @@ class ExperimentRunner:
         'timestep',
     ]
     optional_keys_params = [
-        'min_wait_time',
-        'min_initial_speed',
+        'prob_timing_min',
+        'prob_speed_min',
         'g',
         'm',
         'drag_coef',
@@ -74,11 +74,11 @@ class ExperimentRunner:
                 'windspacetime_id',
                 'num_trials',
                 'prob_speed_fn_name',
-                'max_initial_speed',
+                'prob_speed_max',
                 'prob_speed_center',
                 'prob_speed_spread',
                 'prob_timing_fn_name',
-                'max_wait_time',
+                'prob_timing_max',
                 'prob_timing_center',
                 'prob_timing_spread',
                 'prob_aiming_fn_name',
@@ -98,8 +98,8 @@ class ExperimentRunner:
                 'timestep',
             ],
             keys can optionally include: [
-                'min_wait_time',
-                'min_initial_speed',
+                'prob_timing_min',
+                'prob_speed_min',
                 'g',
                 'm',
                 'drag_coef',
@@ -143,8 +143,8 @@ class ExperimentRunner:
 
         # Instantiate probability generators
         pgtime = ProbGenTiming(
-            x_min = self.params.get('min_wait_time'), # optional, o.w. None
-            x_max = self.params['max_wait_time'],
+            x_min = self.params.get('prob_timing_min'), # optional, o.w. None
+            x_max = self.params['prob_timing_max'],
             x_center = self.params['prob_timing_center'],
             x_spread = self.params['prob_timing_spread'],
         )
@@ -167,8 +167,8 @@ class ExperimentRunner:
             x_spread = self.params['prob_aiming_X3_spread'],
         )
         pgspeed = ProbGenSpeed(
-            x_min = self.params.get('min_initial_speed'), # optional, o.w. None
-            x_max = self.params['max_initial_speed'],
+            x_min = self.params.get('prob_speed_min'), # optional, o.w. None
+            x_max = self.params['prob_speed_max'],
             x_center = self.params['prob_speed_center'],
             x_spread = self.params['prob_speed_spread'],
         )
