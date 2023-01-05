@@ -127,7 +127,11 @@ class ExperimentRunner:
         """Checks that supplied params meet requirements."""
         # check for required and optional params
         if not set(self.required_keys_params).issubset(set(params.keys())):
-            raise AssertionError('Required params are missing.')        
+            missing = []
+            for k in self.required_keys_params:
+                if k not in params.keys():
+                    missing.append(k)
+            raise AssertionError(f'Required params are missing: {missing}')        
 
     def load_windspacetime(self,):
         id = self.params['windspacetime_id']
