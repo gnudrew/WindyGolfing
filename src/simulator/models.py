@@ -72,6 +72,8 @@ class SimTrial(BaseParams, Timestamped):
     time_initial = models.FloatField()
     direction_initial = ArrayField(models.FloatField(), max_length=3) # unit vector
     speed_initial = models.FloatField()
+    position_initial = ArrayField(models.FloatField(), max_length=3)
+    position_final = ArrayField(models.FloatField(), max_length=3)
 
     blob_filename = models.CharField(max_length=50, null=True)
 
