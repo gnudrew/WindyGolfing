@@ -253,8 +253,10 @@ class ExperimentRunner:
             runner = SimTrialRunner(t_initial, self.tee_position, v_initial, self.arr_windspacetime, timestep)
             runner.run()
 
-            # extract runner outputs used to save sim trial
+            # feed runner outputs into save sim trial
             params = self.params
+            params['position_initial'] = runner.p_initial
+            params['position_final'] = runner.p_final
 
             # save the sim trial
             id = self.save_trial(runner.ball_position, params)
