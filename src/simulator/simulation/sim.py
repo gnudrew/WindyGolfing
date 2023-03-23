@@ -133,6 +133,7 @@ class SimTrialRunner:
             p1 = self.ball_position[t-2,:]
             p2 = self.ball_position[t-1,:]
             if self.verbosity >= 1:
+                print("[SimTrialRunner] Ball hit ground.")
                 print(f"[SimTrialRunner] Interpolating for final position between...")
                 print(f"[SimTrialRunner]   >> p1: {p1}")
                 print(f"[SimTrialRunner]   >> p2: {p2}")
@@ -153,6 +154,10 @@ class SimTrialRunner:
                 print(f"[SimTrialRunner] Interpolated.")
                 print(f"[SimTrialRunner]   >> p_final: {self.p_final}")
                 print(f'[SimTrialRunner] Run complete.')
+        else:
+            if self.verbosity >= 1:
+                print("[SimTrialRunner] Ball didn't hit ground.")
+            self.p_final = np.array([np.nan, np.nan, np.nan])
 
         return self.ball_position
 

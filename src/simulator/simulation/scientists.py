@@ -11,6 +11,7 @@ from winds.models import WindSpacetime
 import numpy as np
 import pandas as pd
 
+from pprint import pprint
 from termcolor import cprint
 
 class ExperimentRunner:
@@ -255,8 +256,8 @@ class ExperimentRunner:
 
             # feed runner outputs into save sim trial
             params = self.params
-            params['position_initial'] = runner.p_initial
-            params['position_final'] = runner.p_final
+            params['position_initial'] = list(runner.p_initial)
+            params['position_final'] = list(runner.p_final)
 
             # save the sim trial
             id = self.save_trial(runner.ball_position, params)
@@ -280,6 +281,8 @@ class ExperimentRunner:
         params: dict
             The simulation parameters passed to the scientist
         """
+        if self.verbosity >= 1:
+            print("[Scientist] Saving Trial...")
         # make dataframe
         df = pd.DataFrame(arr_ball_position, columns=['x', 'y', 'z'],)
         
@@ -292,8 +295,14 @@ class ExperimentRunner:
         params_simtrial['speed_initial'] = self.speed_initial
 
         # save
+        if self.verbosity >= 1:
+            print("[Scientist] fields:")
+            pprint(params_simtrial)
         simtrial_obj = BlobWrangler().write_blob(df, SimTrial, params_simtrial)
         
+        if self.verbosity >= 1:
+            print("[Scientist] Saved.")
+
         return simtrial_obj
 
 class ExperimentCollater:
