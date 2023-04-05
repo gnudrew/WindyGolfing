@@ -1,0 +1,1 @@
+celery -A windy_golfing worker -l INFO
